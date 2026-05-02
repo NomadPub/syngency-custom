@@ -3,27 +3,47 @@
 /**
  * Syngency WordPress plugin - bootstrap file
  *
- * @link              https://github.com/syngency/wordpress-plugin
+ * @link              https://posewellmodels.com
  * @since             1.0.0
  * @package           Syngency
  *
  * @syngency-wordpress-plugin
- * Plugin Name:       Syngency
- * Plugin URI:        https://github.com/syngency/wordpress-plugin
- * Description:       Displays Syngency divisions, models, and galleries on your WordPress site
- * Version:           1.4.1
- * Author:            Syngency
- * Author URI:        http://syngency.com/
+ * Plugin Name:       Syngency (Posewell Models Custom)
+ * Plugin URI:        https://posewellmodels.com
+ * Description:       Custom version for Posewell Models - Displays Syngency divisions, models, and galleries
+ * Version:           1.4.1-posewell-1
+ * Author:            Posewell Models (based on Syngency)
+ * Author URI:        https://posewellmodels.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
- * Text Domain: 	  syngency
- * Domain Path: 	  /languages
+ * Text Domain:       syngency
+ * Domain Path:       /languages
  */
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
+
+/**
+ * Disable automatic updates for this custom plugin
+ */
+add_filter( 'auto_update_plugin', function( $update, $plugin ) {
+	if ( isset( $plugin->plugin ) && strpos( $plugin->plugin, 'syngency/syngency.php' ) !== false ) {
+		return false;
+	}
+	return $update;
+}, 10, 2 );
+
+/**
+ * Remove update notifications for this custom plugin
+ */
+add_filter( 'pre_set_site_transient_update_plugins', function( $value ) {
+	if ( isset( $value->response['syngency/syngency.php'] ) ) {
+		unset( $value->response['syngency/syngency.php'] );
+	}
+	return $value;
+} );
 
 /**
  * The code that runs during plugin activation.
