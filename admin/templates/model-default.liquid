@@ -1,0 +1,223 @@
+<!-- default model template -->
+
+<div class="syngency-model">
+
+	<!-- Model Name -->
+	<h2 class="syngency-model-name">{{ model.display_name }}</h2>
+
+	<!-- Gallery Links -->
+	<ul class="syngency-model-galleries">
+	{% for gallery in model.galleries %}
+		<li>
+			<a href="#{{ gallery.url }}"{% if forloop.first %} class="active"{% endif %}>
+				{{ gallery.name }}
+			</a>
+		</li>
+	{% endfor %}
+	</ul>
+
+	{% for gallery in model.galleries %}
+
+	<!-- Gallery -->
+	<div class="syngency-model-gallery" id="{{ gallery.url }}"{% if forloop.first == false %} style="display:block;"{% endif %}>
+		<h3 class="syngency-model-gallery-name">{{ gallery.name }}</h3>
+		<ul>
+			{% for file in gallery.files %}
+
+				{% if file.is_image %}
+				<li class="syngency-model-gallery-image">
+					{% if options.link_size %}
+					<a href="{{ file.link_url }}" rel="{{ gallery.url }}">
+						<img src="{{ file.image_url }}" alt="">
+					</a>
+					{% else %}
+						<img src="{{ file.image_url }}" alt="">
+					{% endif %}
+				</li>
+				{% endif %}
+				{% if file.is_video %}
+					{% assign externalSource = file.external_source %}
+					{% case externalSource %}
+						{% when 'vimeo' %}
+							<li class="syngency-model-gallery-video">
+								<iframe src="{{ file.url }}" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+							</li>
+						{% when 'youtube' %}
+							<li class="syngency-model-gallery-video">
+								<iframe src="{{ file.url }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+							</li>
+						{% else %}
+							<li class="syngency-model-gallery-video">
+								<video controls>
+									<source src="{{ file.url }}" type="video/mp4">
+									Your browser does not support the video tag.
+								</video>
+							</li>
+					{% endcase %}
+				{% endif %}
+				{% if file.is_audio %}
+					{% assign externalSource = file.external_source %}
+						<li class="syngency-model-gallery-audio">
+							<audio controls>
+								<source src="{{ file.url }}" type="audio/mpeg">
+								Your browser does not support the audio element.
+							</audio>
+						</li>
+				{% endif %}
+			
+			{% endfor %}
+			
+		</ul>
+	</div>
+
+
+	{% endfor %}
+
+	<!-- Measurements -->
+	<ul class="syngency-model-measurements">
+		{% for measurement in model.measurements %}
+			{% unless options.measurements contains measurement.name %}
+		<li>
+			<span class="label">{{ measurement.name }}</span>
+			{% if measurement.imperial %}
+				<span class="value imperial">{{ measurement.imperial }}</span>
+				<span class="value metric">{{ measurement.metric }}</span>
+			{% else %}
+				<span class="value size">{{ measurement.size }}</span>
+			{% endif %}
+		</li>
+			{% endunless %}
+		{% endfor %}
+		{% if options.measurements contains 'Hair' and model.hair_color %}
+        <li>
+            <span class="label">Hair</span>
+            </li>
+            <li>
+            <span class="value">{{ model.hair_color }}</span>
+        </li>
+        {% endif %}
+        {% if options.measurements contains 'Eyes' and model.eye_color %}
+        <li>
+            <span class="label">Eyes</span>
+            </li>
+            <li>
+            <span class="value">{{ model.eye_color }}</span>
+        </li>
+        {% endif %}
+	</ul>
+
+</div>
+
+<style>
+
+.syngency-model-gallery-name {
+	border-bottom: 1px solid #ddd;
+	padding-bottom: 15px;
+}
+
+.syngency-model-measurements {
+	list-style: none;
+	padding: 15px 0 0 0;
+	margin: 30px 0;
+	border-top: 1px solid #ddd;
+}
+
+.syngency-model-measurements li {
+	display: inline;
+	margin-right: 15px;
+}
+
+.syngency-model-measurements li:last-child {
+	margin-right: 0;
+}
+
+.syngency-model-measurements .label {
+	color: #acacac;
+}
+
+.syngency-model-measurements .value {
+	font-weight: bold;
+}
+
+.syngency-model-galleries {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+	float: right;
+}
+
+.syngency-model-galleries li {
+	display: inline;
+	padding-right: 5px;
+	margin-right: 10px;
+	border-right: 1px solid #ccc;
+}
+
+.syngency-model-galleries li:last-child {
+	border-right: 0;
+}
+
+.syngency-model-galleries a {
+	font-family: Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	font-weight: 700;
+	text-transform: uppercase;
+	text-decoration: none;
+	color: #999;
+	letter-spacing: 0.5px;
+	box-shadow: none !important;
+}
+
+.syngency-model-galleries a.active {
+	color: #191919;
+	text-decoration: underline;
+}
+
+.syngency-model-gallery ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+.syngency-model-gallery-image {
+	display: inline-block;
+	margin: 0 15px 15px 0;
+	padding: 5px;
+	border: 1px solid #eee;
+	box-shadow: none !important;
+}
+
+.syngency-model-gallery-image a img {
+	display: inline-block !important;
+}
+.syngency-model-gallery-video {
+    position: relative;
+	display: block;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+	margin-bottom: 10px;
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    height: auto;
+}
+.syngency-model-gallery-video iframe, .syngency-model-gallery-video video{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+.syngency-model-gallery-audio {
+    position: relative;
+	display: block;
+	width: 100%;
+    max-width: 100%;
+    height: auto;
+}
+.syngency-model-gallery-audio audio{
+	width: 100%;
+}
+.hide {
+	display: none !important;
+}
+</style>
