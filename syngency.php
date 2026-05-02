@@ -29,7 +29,15 @@ if ( ! defined( 'WPINC' ) ) {
  * The code that runs during plugin activation.
  */
 function activate_syngency() {
-
+    // Register the rewrite rules for portfolio URLs
+    add_rewrite_rule(
+        '^divisions/([^/]+)/portfolios/([^/]+)/?$',
+        'index.php?pagename=$matches[1]&model=$matches[2]',
+        'top'
+    );
+    
+    // Flush rewrite rules to ensure the new rules are written to the database
+    flush_rewrite_rules( true );
 }
 
 /**

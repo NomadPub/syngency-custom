@@ -52,10 +52,14 @@ class Syngency_Public {
 
 		$this->plugin_name = $plugin_name;
 		$this->version = $version;
-		$this->options = get_option('syngency_options');
+		// Fix Issue 3: Read options with default empty array to avoid PHP 8 array offset on bool warnings
+		$this->options = get_option('syngency_options', []);
 
 		// Register shortcode - [syngency division="division-url" office="office-url"]
 		add_shortcode('syngency', array($this, 'router'));
+
+		// Register rewrite rules on init (must run on every load, not just activation)
+		add_action( 'init', array( $this, 'add_rewrite_rules' ) );
 
 		// Catch query vars
 		add_filter('query_vars', function($vars) {
@@ -64,6 +68,18 @@ class Syngency_Public {
 		});
 	}
 
+
+	/**
+	 * Register rewrite rules for portfolio URLs
+	 * Must be called on every init to ensure rules persist after permalink flushes
+	 */
+	public function add_rewrite_rules() {
+		add_rewrite_rule(
+			'^divisions/([^/]+)/portfolios/([^/]+)/?$',
+			'index.php?pagename=$matches[1]&model=$matches[2]',
+			'top'
+		);
+	}
 
 	/**
 	 * Render Liquid template
@@ -117,25 +133,15 @@ class Syngency_Public {
 	 */
 	public function get_division($atts) {
 
-		global $wpdb;
-        $query = "SELECT ID, post_title, post_content, post_name FROM " . $wpdb->posts . " WHERE post_content LIKE '%[syngency%' AND post_status = 'publish' AND post_type = 'page'";
-        $pages = $wpdb->get_results($query);
-
-		foreach ( $pages as $page ) {
-			add_rewrite_rule( 
-				'([^/]*)/' . $page->post_name . '/([^/]*)/(.+?)/?$', 
-				'index.php?section=$matches[1]&pagename=' . $page->post_name . '&folder=$matches[2]&model=$matches[3]', 
-				'top' 
-			);
-			flush_rewrite_rules();
-		}
+		// Note: Rewrite rules are now handled by add_rewrite_rules() on init
+		// This prevents unnecessary flush_rewrite_calls on every page load
 
 		if (!isset($atts['division'])) {
 			return false;
 		}
 
 		// Build request URL
-        $request_url = 'http://';
+        $request_url = 'https://';
         
         // Office
         if ( isset($atts['office']) ) {
@@ -203,7 +209,7 @@ class Syngency_Public {
 		}
 
 		// Build request URL
-        $request_url = 'http://';
+        $request_url = 'https://';
         
         // Office
         if ( isset($atts['office']) ) {

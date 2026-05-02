@@ -52,7 +52,8 @@ class Syngency_Admin {
 
         $this->plugin_name = $plugin_name;
         $this->version = $version;
-        $this->options = get_option( 'syngency_options' );
+        // Fix Issue 3: Read options individually with defaults to avoid PHP 8 array offset on bool warnings
+        $this->options = get_option( 'syngency_options', [] );
         $this->defaults = [];
 
         
@@ -360,7 +361,7 @@ class Syngency_Admin {
         $query = "SELECT ID, post_title, post_content, post_name, post_status FROM " . $wpdb->posts . " WHERE post_content LIKE '%[syngency%' AND post_status = 'publish' AND post_type = 'page'";
         $pages = $wpdb->get_results($query);
 
-        $request_url = 'http://' . $this->options['domain'] . '/divisions.json';
+        $request_url = 'https://' . $this->options['domain'] . '/divisions.json';
         $request_args = array(
           'headers' => array(
             'Authorization' => 'API-Key ' . $this->options['api_key']
@@ -429,7 +430,7 @@ class Syngency_Admin {
     public function divisions_shortcodes()
     {
         echo '<h3 class="icon-divisions num1">Divisions</h3>';
-        $request_url = 'http://' . $this->options['domain'] . '/divisions.json';
+        $request_url = 'https://' . $this->options['domain'] . '/divisions.json';
         $request_args = array(
           'headers' => array(
             'Authorization' => 'API-Key ' . $this->options['api_key']
@@ -514,7 +515,7 @@ class Syngency_Admin {
                     }
                 }            
                 $output .= '</tbody></table>';
-                flush_rewrite_rules();
+                // Note: flush_rewrite_rules() removed - rules are now registered on init hook
                 echo $output;
             } else {
                 $output = '<div class="syngency-wrapper">
