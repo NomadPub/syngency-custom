@@ -1,21 +1,23 @@
-=== Syngency ===
-Contributors: syngency
-Tags: syngency
+=== Syngency (Posewell Models Custom) ===
+Contributors: posewellmodels
+Tags: syngency, models, portfolio, gallery
 Requires at least: 5.8
-Tested up to: 6.5
-Stable tag: 1.4.1
+Tested up to: 6.7
+Stable tag: 1.4.1-posewell-1
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Display Syngency divisions, models, and galleries on your WordPress website.
+Custom version for Posewell Models - Display Syngency divisions, models, and galleries on your WordPress website.
 
 == Description ==
 
-Syngency's WordPress plugin enables you to display your divisions, models, and galleries from Syngency on your WordPress website.
+This is a customized version of the Syngency plugin specifically configured for Posewell Models. It enables you to display your divisions, models, and galleries from Syngency on your WordPress website.
 Any changes made in Syngency are reflected on your WordPress site instantly, and you have complete control of the way the division and model portfolio templates that are displayed on your site.
 
 Important: Use of this plugin is in accordance with the [Syngency Terms of Service](https://syngency.com).
+
+**This is a custom fork and will not receive automatic updates from the original Syngency plugin.**
 
 == Installation ==
 
